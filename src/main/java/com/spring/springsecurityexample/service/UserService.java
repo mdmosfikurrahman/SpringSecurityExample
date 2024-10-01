@@ -29,7 +29,7 @@ public class UserService {
     public String verify(Users users) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(users.getUsername(), users.getPassword()));
         if (authentication.isAuthenticated()) {
-            return jwtService.generateToken();
+            return jwtService.generateToken(users.getUsername());
         }
         return "failed";
     }
