@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: SpringSecurityExample
+
+  security:
+    user:
+      name: mosfik
+      password: mosfik123
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/multidatahub
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
