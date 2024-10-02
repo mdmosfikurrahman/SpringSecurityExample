@@ -1,5 +1,6 @@
 package com.spring.springsecurityexample.jwt;
 
+import com.spring.springsecurityexample.model.JwtTokenResponse;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import java.security.NoSuchAlgorithmException;
+import java.text.SimpleDateFormat;
 import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
@@ -33,19 +35,26 @@ public class JwtService {
         }
     }
 
-    public String generateToken(String username) {
+    public JwtTokenResponse generateToken(String username) {
         Map<String, Object> claims = new HashMap<>();
-        return Jwts.builder()
+        Date issuedAt = new Date(System.currentTimeMillis());
+        Date expiration = new Date(System.currentTimeMillis() + 60 * 60 * 1000);
+
+        String token = Jwts.builder()
                 .claims()
                 .add(claims)
                 .subject(username)
-                .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + 60 * 60 * 30))
+                .issuedAt(issuedAt)
+                .expiration(expiration)
                 .and()
                 .signWith(getKey())
                 .compact();
 
+        SimpleDateFormat formatter = new SimpleDateFormat("dd MMMM, yyyy hh:mm:ss a");
+
+        return new JwtTokenResponse(token, username, formatter.format(issuedAt), formatter.format(expiration));
     }
+
 
     private SecretKey getKey() {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);

@@ -1,5 +1,6 @@
 package com.spring.springsecurityexample.controller;
 
+import com.spring.springsecurityexample.model.JwtTokenResponse;
 import com.spring.springsecurityexample.model.Users;
 import com.spring.springsecurityexample.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +20,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public String login(@RequestBody Users users) {
+    public JwtTokenResponse login(@RequestBody Users users) {
         return service.verify(users);
     }
 

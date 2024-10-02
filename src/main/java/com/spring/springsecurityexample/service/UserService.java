@@ -1,10 +1,12 @@
 package com.spring.springsecurityexample.service;
 
 import com.spring.springsecurityexample.jwt.JwtService;
+import com.spring.springsecurityexample.model.JwtTokenResponse;
 import com.spring.springsecurityexample.model.Users;
 import com.spring.springsecurityexample.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -26,11 +28,15 @@ public class UserService {
 
     }
 
-    public String verify(Users users) {
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(users.getUsername(), users.getPassword()));
+    public JwtTokenResponse verify(Users users) {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(users.getUsername(), users.getPassword())
+        );
+
         if (authentication.isAuthenticated()) {
             return jwtService.generateToken(users.getUsername());
+        } else {
+            throw new BadCredentialsException("Authentication failed for user: " + users.getUsername());
         }
-        return "failed";
     }
 }
